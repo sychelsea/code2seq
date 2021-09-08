@@ -10,8 +10,6 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
-
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,12 +19,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SuppressWarnings("StringEquality")
-class FeatureExtractor {
-    private final static String upSymbol = "|";
-    private final static String downSymbol = "|";
-    private static final Set<String> s_ParentTypeToAddChildId = Stream
-            .of("AssignExpr", "ArrayAccessExpr", "FieldAccessExpr", "MethodCallExpr")
-            .collect(Collectors.toCollection(HashSet::new));
+public class FeatureExtractor {
+    private static final String upSymbol = "|";
+    private static final String downSymbol = "|";
+    private static final Set<String> s_ParentTypeToAddChildId =
+            Stream.of("AssignExpr", "ArrayAccessExpr", "FieldAccessExpr", "MethodCallExpr")
+                    .collect(Collectors.toCollection(HashSet::new));
     private final CommandLineValues m_CommandLineValues;
     private final Path filePath;
 
@@ -94,8 +92,9 @@ class FeatureExtractor {
 
     private ProgramFeatures generatePathFeaturesForFunction(MethodContent methodContent) {
         ArrayList<Node> functionLeaves = methodContent.getLeaves();
-        ProgramFeatures programFeatures = new ProgramFeatures(
-                methodContent.getName(), this.filePath, methodContent.getContent());
+        ProgramFeatures programFeatures =
+                new ProgramFeatures(
+                        methodContent.getName(), this.filePath, methodContent.getContent());
 
         for (int i = 0; i < functionLeaves.size(); i++) {
             for (int j = i + 1; j < functionLeaves.size(); j++) {
@@ -121,8 +120,10 @@ class FeatureExtractor {
         int commonPrefix = 0;
         int currentSourceAncestorIndex = sourceStack.size() - 1;
         int currentTargetAncestorIndex = targetStack.size() - 1;
-        while (currentSourceAncestorIndex >= 0 && currentTargetAncestorIndex >= 0
-                && sourceStack.get(currentSourceAncestorIndex) == targetStack.get(currentTargetAncestorIndex)) {
+        while (currentSourceAncestorIndex >= 0
+                && currentTargetAncestorIndex >= 0
+                && sourceStack.get(currentSourceAncestorIndex)
+                        == targetStack.get(currentTargetAncestorIndex)) {
             commonPrefix++;
             currentSourceAncestorIndex--;
             currentTargetAncestorIndex--;
@@ -134,8 +135,11 @@ class FeatureExtractor {
         }
 
         if (currentSourceAncestorIndex >= 0 && currentTargetAncestorIndex >= 0) {
-            int pathWidth = targetStack.get(currentTargetAncestorIndex).getUserData(Common.ChildId)
-                    - sourceStack.get(currentSourceAncestorIndex).getUserData(Common.ChildId);
+            int pathWidth =
+                    targetStack.get(currentTargetAncestorIndex).getUserData(Common.ChildId)
+                            - sourceStack
+                                    .get(currentSourceAncestorIndex)
+                                    .getUserData(Common.ChildId);
             if (pathWidth > m_CommandLineValues.MaxPathWidth) {
                 return Common.EmptyString;
             }
@@ -144,13 +148,17 @@ class FeatureExtractor {
         for (int i = 0; i < sourceStack.size() - commonPrefix; i++) {
             Node currentNode = sourceStack.get(i);
             String childId = Common.EmptyString;
-            String parentRawType = currentNode.getParentNode().getUserData(Common.PropertyKey).getRawType();
+            String parentRawType =
+                    currentNode.getParentNode().getUserData(Common.PropertyKey).getRawType();
             if (i == 0 || s_ParentTypeToAddChildId.contains(parentRawType)) {
-                childId = saturateChildId(currentNode.getUserData(Common.ChildId))
-                        .toString();
+                childId = saturateChildId(currentNode.getUserData(Common.ChildId)).toString();
             }
-            stringBuilder.add(String.format("%s%s%s",
-                    currentNode.getUserData(Common.PropertyKey).getType(true), childId, upSymbol));
+            stringBuilder.add(
+                    String.format(
+                            "%s%s%s",
+                            currentNode.getUserData(Common.PropertyKey).getType(true),
+                            childId,
+                            upSymbol));
         }
 
         Node commonNode = sourceStack.get(sourceStack.size() - commonPrefix);
@@ -161,21 +169,28 @@ class FeatureExtractor {
             commonNodeParentRawType = parentNodeProperty.getRawType();
         }
         if (s_ParentTypeToAddChildId.contains(commonNodeParentRawType)) {
-            commonNodeChildId = saturateChildId(commonNode.getUserData(Common.ChildId))
-                    .toString();
+            commonNodeChildId = saturateChildId(commonNode.getUserData(Common.ChildId)).toString();
         }
-        stringBuilder.add(String.format("%s%s",
-                commonNode.getUserData(Common.PropertyKey).getType(true), commonNodeChildId));
+        stringBuilder.add(
+                String.format(
+                        "%s%s",
+                        commonNode.getUserData(Common.PropertyKey).getType(true),
+                        commonNodeChildId));
 
         for (int i = targetStack.size() - commonPrefix - 1; i >= 0; i--) {
             Node currentNode = targetStack.get(i);
             String childId = Common.EmptyString;
-            if (i == 0 || s_ParentTypeToAddChildId.contains(currentNode.getUserData(Common.PropertyKey).getRawType())) {
-                childId = saturateChildId(currentNode.getUserData(Common.ChildId))
-                        .toString();
+            if (i == 0
+                    || s_ParentTypeToAddChildId.contains(
+                            currentNode.getUserData(Common.PropertyKey).getRawType())) {
+                childId = saturateChildId(currentNode.getUserData(Common.ChildId)).toString();
             }
-            stringBuilder.add(String.format("%s%s%s", downSymbol,
-                    currentNode.getUserData(Common.PropertyKey).getType(true), childId));
+            stringBuilder.add(
+                    String.format(
+                            "%s%s%s",
+                            downSymbol,
+                            currentNode.getUserData(Common.PropertyKey).getType(true),
+                            childId));
         }
 
         return stringBuilder.toString();

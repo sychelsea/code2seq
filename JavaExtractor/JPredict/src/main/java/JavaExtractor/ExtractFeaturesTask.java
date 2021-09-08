@@ -3,8 +3,7 @@ package JavaExtractor;
 import JavaExtractor.Common.CommandLineValues;
 import JavaExtractor.Common.Common;
 import JavaExtractor.FeaturesEntities.ProgramFeatures;
-import org.apache.commons.lang3.StringUtils;
-
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -12,7 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import com.google.gson.Gson;
+import org.apache.commons.lang3.StringUtils;
 
 class ExtractFeaturesTask implements Callable<Void> {
     private final CommandLineValues commandLineValues;
@@ -50,8 +49,9 @@ class ExtractFeaturesTask implements Callable<Void> {
     private ArrayList<ProgramFeatures> extractSingleFile() throws IOException {
         String code;
 
-        if (commandLineValues.MaxFileLength > 0 &&
-                Files.lines(filePath, Charset.defaultCharset()).count() > commandLineValues.MaxFileLength) {
+        if (commandLineValues.MaxFileLength > 0
+                && Files.lines(filePath, Charset.defaultCharset()).count()
+                        > commandLineValues.MaxFileLength) {
             return new ArrayList<>();
         }
         try {
@@ -78,8 +78,7 @@ class ExtractFeaturesTask implements Callable<Void> {
             String toPrint;
             if (commandLineValues.JsonOutput) {
                 toPrint = new Gson().toJson(singleMethodFeatures);
-            }
-            else {
+            } else {
                 toPrint = singleMethodFeatures.toString();
             }
             if (commandLineValues.PrettyPrint) {
@@ -87,9 +86,7 @@ class ExtractFeaturesTask implements Callable<Void> {
             }
             builder.append(toPrint);
 
-
             methodsOutputs.add(builder.toString());
-
         }
         return StringUtils.join(methodsOutputs, "\n");
     }

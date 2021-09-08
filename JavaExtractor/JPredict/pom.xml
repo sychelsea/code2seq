@@ -31,8 +31,9 @@
                         <configuration>
                             <transformers>
                                 <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                </transformer>
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>JavaExtractor.ml4se.Preprocessor</mainClass>
+                            </transformer>
                             </transformers>
                         </configuration>
                     </execution>

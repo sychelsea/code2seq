@@ -29,7 +29,9 @@
             </goals>
             <configuration>
               <transformers>
-                <transformer />
+                <transformer>
+                  <mainClass>JavaExtractor.ml4se.Preprocessor</mainClass>
+                </transformer>
               </transformers>
             </configuration>
           </execution>
