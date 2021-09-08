@@ -105,7 +105,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.file is not None:
-        command = 'java -cp ' + args.jar + ' JavaExtractor.Preprocessor --max_path_length ' + \
+        command = 'java -cp ' + args.jar + ' JavaExtractor.ml4se.Preprocessor --max_path_length ' + \
                   str(args.max_path_length) + ' --max_path_width ' + str(args.max_path_width) + ' --file ' + args.file
         os.system(command)
     elif args.dir is not None:

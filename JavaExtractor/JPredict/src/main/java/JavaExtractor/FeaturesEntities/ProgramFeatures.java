@@ -13,9 +13,8 @@ public class ProgramFeatures {
     String filePath;
 
     public ProgramFeatures(String name, Path filePath, String textContent) {
-
         this.name = name;
-        this.filePath = filePath.toAbsolutePath().toString();
+        // this.filePath = filePath.toAbsolutePath().toString();
         this.textContent = textContent;
     }
 
@@ -24,7 +23,8 @@ public class ProgramFeatures {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(name).append(" ");
-        stringBuilder.append(features.stream().map(ProgramRelation::toString).collect(Collectors.joining(" ")));
+        stringBuilder.append(
+                features.stream().map(ProgramRelation::toString).collect(Collectors.joining(" ")));
 
         return stringBuilder.toString();
     }

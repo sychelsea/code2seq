@@ -1,10 +1,6 @@
 package JavaExtractor.ml4se;
 
 import JavaExtractor.Common.CommandLineValues;
-import JavaExtractor.FeaturesEntities.ProgramFeatures;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +27,6 @@ public class Preprocessor {
 
             collectFeauturefromFile(
                     s_CommandLineValues.NumThreads, s_CommandLineValues.File.toPath());
-            // System.out.println("????");
-            printData();
-
         } else {
             System.err.println("Input File not found.");
         }
@@ -46,8 +39,7 @@ public class Preprocessor {
 
         for (Method m : methods) {
             if (!m.getBody().isEmpty()) {
-                // System.out.println("i: " + i);
-                extractionTasks.add(new PreprocessTask(m, s_CommandLineValues));
+                extractionTasks.add(new PreprocessTask(m.getBody(), s_CommandLineValues));
             }
         }
 
@@ -60,35 +52,5 @@ public class Preprocessor {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    private static void printData() {
-        // try {
-        //   Files.writeString(cmdArgs.OutputFile, out);
-        // } catch (IOException e) {
-        //   e.printStackTrace();
-        // }
-        // System.out.println("feature size: " + features.size());
-        try (BufferedWriter writer = Files.newBufferedWriter(cmdArgs.OutputFile)) {
-
-            for (ProgramFeatures feature : features) {
-                String out = featuresToString(feature);
-                // System.out.println("[JavaExtractor] " + out);
-                writer.write(out + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static String featuresToString(ProgramFeatures feature) {
-        StringBuilder builder = new StringBuilder();
-
-        String toPrint = feature.toString();
-        if (cmdArgs.PrettyPrint) {
-            toPrint = toPrint.replace(" ", "\n\t");
-        }
-
-        return toPrint;
     }
 }

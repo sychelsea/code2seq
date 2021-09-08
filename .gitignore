@@ -4,4 +4,6 @@
 *.iml
 *.xml
 *.pyc
-
+*.c2s
+*.raw.txt
+.nfs*

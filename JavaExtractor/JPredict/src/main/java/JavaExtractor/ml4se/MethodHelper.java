@@ -8,7 +8,6 @@ import java.util.stream.*;
 public final class MethodHelper {
 
     public static List<Method> readMethodsFromFile(String fileName) {
-        System.out.println("[+] Reading methods from \"" + fileName + "\"");
         List<Method> methods = new ArrayList<Method>();
 
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
