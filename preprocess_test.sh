@@ -22,8 +22,8 @@
 #   step and set this value to the number of cores.
 # PYTHON - python3 interpreter alias.
 
-DATASET_NAME=java_small_validation_return-condition_original
-TEST_INPUT_FILE=~/Downloads/ml4se/mutation/$DATASET_NAME.txt
+DATASET_NAME=java_large_test_create-add-token-replacement_original
+TEST_INPUT_FILE=/data/share/ml4se/data/mutation/$DATASET_NAME.txt
 echo $TEST_INPUT_FILE
 
 MAX_DATA_CONTEXTS=1000

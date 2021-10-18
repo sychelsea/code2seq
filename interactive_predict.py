@@ -31,13 +31,9 @@ class InteractivePredictor:
                 print('Exiting...')
                 return
             user_input = ' '.join(self.read_file(input_filename))
-            try:
-                predict_lines, pc_info_dict = self.path_extractor.extract_paths(user_input)
-            except ValueError:
-                continue
-            model_results = self.model.predict(predict_lines)
+            prediction_results = self.predict_single_method(user_input)
+            if prediction_results == None : continue
 
-            prediction_results = Common.parse_results(model_results, pc_info_dict, topk=SHOW_TOP_CONTEXTS)
             for index, method_prediction in prediction_results.items():
                 print('Original name:\t' + method_prediction.original_name)
                 if self.config.BEAM_WIDTH == 0:
@@ -53,3 +49,19 @@ class InteractivePredictor:
                     print('Predicted:')
                     for predicted_seq in method_prediction.predictions:
                         print('\t%s' % predicted_seq.prediction)
+
+
+    def predict_single_method(self, user_input):
+            try:
+                predict_lines, pc_info_dict = self.path_extractor.extract_paths(user_input)
+            except ValueError:
+                #continue
+                return None
+
+            model_results = self.model.predict(predict_lines)
+            prediction_results = Common.parse_results(model_results, pc_info_dict, topk=SHOW_TOP_CONTEXTS)
+
+            return prediction_results
+
+
+
